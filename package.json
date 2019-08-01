@@ -1,0 +1,17 @@
+{
+  "name": "get_stocks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --experimental-modules --no-warnings index.mjs"
+  },
+  "author": "Perry Valdez",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "node-fetch": "^2.6.0",
+    "node-fetch-cookies": "^1.0.6"
+  }
+}

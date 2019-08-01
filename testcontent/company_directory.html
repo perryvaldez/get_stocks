@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Company List</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script src="/js/lib/jquery-1.10.2.min.js"></script>
+<script src="/js/lib/jquery-ui-1.10.3.min.js"></script>
+<script src="/js/lib/jquery.blockUI.js"></script>
+<!-- <script src="/js/lib/jquery.selectbox-0.2.js"></script> -->
+<script src="/js/lib/jquery.ezmark.js"></script>
+<script src="/js/lib/jquery.cycle.js"></script>
+<script src="/js/common/epCommon.js"></script>
+<script src="/js/common/epPopup.js"></script>
+<script src="http://steema.us/files/jscript/src/teechart.js" type="text/javascript"></script>
+<script src="/js/teechart/teechart-table.js"></script>  
+<script src="/js/teechart/teechart-extras.js"></script>
+<script src="/js/teechart/teechart-data.js"></script>
+<script src="/js/teechart/date.format.js"></script>
+<link href="/js/lib/themes/base/jquery-ui.css" rel="stylesheet" />
+<!-- <link href="/js/lib/themes/jquery.selectbox.css" rel="stylesheet" /> -->
+<link href="/js/lib/themes/jquery.ezmark.css" rel="stylesheet" />
+<link href="/css/common.css" type="text/css" rel="stylesheet" />
+<link href="/css/contents.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+<script type="text/javascript">
+$(function() {
+  $("#searchKeyTop").autocomplete({
+    minLength: 1,
+    source: "/autoComplete/searchCompanyNameSymbol.ax",
+    focus: function(event, ui) {
+      //$("#searchKeyTop").val(ui.item.cmpyNm);
+      return false;
+    },
+    select: function(event, ui) {
+      location.href = "/companyInformation/form.do?cmpy_id=" + ui.item.cmpyId;
+      return false;
+    }
+  })
+  .data("ui-autocomplete")._renderItem = function(ul, item) {
+    return $("<li>").append("<a><div class='nm'>" + item.cmpyNm + "</div><span class='sym'>" + item.symbol + "</span></a>").appendTo(ul);
+  };
+});
+</script>
+<div id="header">
+  <div id="top">
+  <h1><a href="/"><img src="/images/common/top_logo.png" alt="PSE Edge"/></a></h1>
+  <fieldset class="totalSearch">
+    <form id="frmTop" onsubmit="return false;">
+    <input type="text" class="topSearch" id="searchKeyTop" value="" title="Type in company name or security code" />
+    <p><a href="/keyword/form.do"><img src="/images/main/advanced_search.png" alt="Advanced Search" /></a></p>
+    </form>
+  </fieldset>
+</div><ul id="topNav">
+    <li><a href="/companyDirectory/form.do"><img src="/images/common/top_company.png" alt="Company List" /></a></li>
+    <li><a href="/disclosureData/listing_applicants_list.do"><img src="/images/common/top_listing.png" alt="Listing Applicants" /></a></li>
+    <li><a href="/disclosureData/watchlist_view.do"><img src="/images/common/top_watch.png" alt="Watch List" /></a></li>
+    <li><a href="/psei/form.do"><img src="/images/common/top_psei.png" alt="PSEi" /></a></li>
+    <li><a href="/disclosureData/etf_form.do"><img src="/images/common/top_etf.png" alt="ETF" /></a></li>
+    <li class="about"><a href="/page/aboutPseEdge.do"><img src="/images/common/top_about.png" alt="About PSE EDGE" /></a></li>
+  </ul>
+</div>
+<div id="wrapper">
+  <div id="side">
+    <ul>
+    <li class="menu01"><a href="#" onclick="return false;">Company Disclosures</a></li>
+    <li class="sub1">
+      <ul class="sub">
+      <li class="sub101"><a href="/announcements/form.do">Company Announcements</a></li>
+      <li class="sub102"><a href="/financialReports/form.do">Financial Reports</a></li>
+      <li class="sub103"><a href="/otherReports/form.do">Other Reports</a></li>
+      </ul>
+    </li>
+    <li class="menu02"><a href="/index/form.do">Index Summary</a></li>
+    <li class="menu03"><a href="/disclosureData/dividends_and_rights_info_form.do">Dividends and Rights</a></li>
+    <li class="menu04"><a href="/disclosureData/halts_and_suspensions_list.do">Halts and Suspensions</a></li>
+    <li class="menu05"><a href="#" onclick="return false;">Exchange Notices</a></li>
+    <li class="sub5">
+      <ul class="sub">
+      <li class="sub501"><a href="/disclosureNotices/form.do">Disclosure Notices</a></li>
+      <li class="sub502"><a href="/listingNotices/form.do">Listing Notices</a></li>
+      </ul>
+    </li>
+    <li class="menu06"><a href="/companyPage/marketCalendar.do">Market Calendar</a></li>
+    </ul>
+  </div>
+
+  <div id="contents">
+  <h2>Company List</h2>
+  <p class="location">Home > Company List</p>
+  <script type="text/javascript">
+$(function() {
+  searchList({url:'/companyDirectory/search.ax',form:'#searchForm'});
+  pageEvent({url:'/companyDirectory/search.ax',form:'#searchForm'});
+
+  $("#searchKey").autocomplete({
+    minLength: 1,
+    source: "/autoComplete/searchCompanyNameSymbol.ax",
+    focus: function(event, ui) {
+      //$("#searchKey").val(ui.item.cmpyNm);
+      return false;
+    },
+    select: function(event, ui) {
+      $("#searchKey").val(ui.item.cmpyNm);
+      $("#companyId").val(ui.item.cmpyId);
+      return false;
+    }
+  })
+  .data("ui-autocomplete")._renderItem = function(ul, item) {
+    return $("<li>").append("<a><div class='nm'>" + item.cmpyNm + "</div><span class='sym'>" + item.symbol + "</span></a>").appendTo(ul);
+  };
+});
+
+function goPage(val){
+  $("#pageNo").val(val);
+  searchList({url:'/companyDirectory/search.ax',form:'#listForm'});
+}
+
+function cmDetail(cmpy_id, security_id){
+	var frm = document.moveForm;
+	frm.cmpy_id.value = cmpy_id;
+	frm.security_id.value = security_id;
+	frm.submit();
+};
+
+</script>
+<form name="moveForm" action="/companyPage/stockData.do">
+  <input type="hidden" name="cmpy_id" id="cmpy_id" value="" />
+  <input type="hidden" name="security_id" id="security_id" value="" />
+</form>
+
+<form id="searchForm" name="searchForm" onsubmit="return false;">
+<input type="hidden" id="companyId" name="companyId" value=""/>
+
+<div class="searchBox">
+  <p><label>Company Name</label>
+    <input type="text" id="searchKey" name="keyword" style="width:300px;" />
+    <a href="#findCompany" id="findCompany"><img src="/images/common/btn_find_company.gif" alt="Find company" /></a></p>
+  <p class="btn"><input id="btnSearch" type="image" src="/images/common/btn_search.png" /></p>
+
+  <p><label>Sector</label>
+  <select id="sector" name="sector" style="width:300px;">
+    <option value="ALL">ALL</option>
+    <option value="Financials">Financials</option>
+<option value="Industrial">Industrial</option>
+<option value="Holding Firms">Holding Firms</option>
+<option value="Property">Property</option>
+<option value="Services">Services</option>
+<option value="Mining and Oil">Mining and Oil</option>
+<option value="Small, Medium &amp; Emerging Board">Small, Medium &amp; Emerging Board</option>
+<option value="ETF">ETF</option>
+</select></p>
+
+  <p><label>Subsector</label>
+  <select id="subsector" name="subsector" style="width:300px;">
+    <option value="ALL">ALL</option>
+    <option value="Banks">Banks</option>
+<option value="Other Financial Institutions">Other Financial Institutions</option>
+<option value="Electricity, Energy, Power &amp; Water">Electricity, Energy, Power &amp; Water</option>
+<option value="Food, Beverage &amp; Tobacco">Food, Beverage &amp; Tobacco</option>
+<option value="Construction, Infra. &amp; Allied Services">Construction, Infra. &amp; Allied Services</option>
+<option value="Chemicals">Chemicals</option>
+<option value="Other Industrials">Other Industrials</option>
+<option value="Holding Firms">Holding Firms</option>
+<option value="Property">Property</option>
+<option value="Media">Media</option>
+<option value="Telecommunications">Telecommunications</option>
+<option value="Information Technology">Information Technology</option>
+<option value="Transportation Services">Transportation Services</option>
+<option value="Hotel &amp; Leisure">Hotel &amp; Leisure</option>
+<option value="Education">Education</option>
+<option value="Other Services">Other Services</option>
+<option value="Mining">Mining</option>
+<option value="Oil">Oil</option>
+<option value="Preferred">Preferred</option>
+<option value="Warrants, Phil. Deposit Receipts, etc.">Warrants, Phil. Deposit Receipts, etc.</option>
+<option value="Small, Medium &amp; Emerging Board">Small, Medium &amp; Emerging Board</option>
+<option value="Bonds">Bonds</option>
+<option value="Dollar Denominated Trading">Dollar Denominated Trading</option>
+<option value="Electrical Components &amp; Equipment">Electrical Components &amp; Equipment</option>
+<option value="Casinos &amp; Gaming">Casinos &amp; Gaming</option>
+<option value="Retail">Retail</option>
+<option value="ETF-Equity">ETF-Equity</option>
+</select></p>
+</div>
+</form>
+
+<table class="list">
+<caption>Recently Listed</caption>
+<colgroup>
+  <col width="21%"/>
+  <col width="9%"/>
+  <col width="9%"/>
+  <col width="12%"/>
+  <col width="12%"/>
+  <col width="14%"/>
+  <col width="15%"/>
+  <col width="8%"/>
+</colgroup>
+<thead>
+<tr>
+  <th>Company Name</th>
+  <th>Stock Symbol</th>
+  <th>Board</th>
+  <th>Listing Date</th>
+  <th>Offer Price</th>
+  <th>Offer Shares</th>
+  <th>Offer Amount</th>
+  <th>Prospectus</th>
+</tr>
+</thead>
+<tbody>
+<tr><td colspan="7" class="alignC">no data.</td></tr>
+</tbody>
+</table>
+<iframe name="downloadFrame" style="display:none;"></iframe>
+<br/>
+
+<div id="dataList">
+  <span class="count">
+</span>
+<p class="sort">
+  <a href="#sort"  onclick="goSort('/companyDirectory/search.ax','cmpy','');return false;"><span>company</span></a>
+  <a href="#sort"  onclick="goSort('/companyDirectory/search.ax','symbol','');return false;"><span>symbol</span></a>
+</p>
+<form id="listForm" name="listForm">
+  <input type="hidden" name="pageNo" id="pageNo" value=""/>
+  <input type="hidden" name="companyId" id="companyId" value=""/>
+  <input type="hidden" name="keyword" id="keyword" value=""/>
+  <input type="hidden" name="sortType" id="sortMode" value=""/>
+  <input type="hidden" name="dateSortType" id="dateSortType" value=""/>
+  <input type="hidden" name="cmpySortType" id="cmpySortType" value=""/>
+  <input type="hidden" name="symbolSortType" id="symbolSortType" value=""/>
+  <input type="hidden" name="sector" id="sector" value=""/>
+  <input type="hidden" name="subsector" id="subsector" value=""/>
+</form>
+<table class="list">
+<colgroup>
+  <col width="35%"/>
+  <col width="10%"/>
+  <col width="15%"/>
+  <col width="30%"/>
+  <col width="10%"/>
+</colgroup>
+<thead>
+  <tr>
+    <th>Company Name</th>
+    <th>Stock Symbol</th>
+    <th>Sector</th>
+    <th>Subsector</th>
+    <th>Listing Date</th>
+  </tr>
+</thead>
+
+<tbody>
+  </tbody>
+</table>
+
+</div>
+<link href="/css/pop.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript">
+$(function() {
+	$("#pop").dialog({
+		autoOpen: false,
+		width: 550,
+		height: 520,
+		modal: true
+		//,position: {my: "center top", at: "left bottom", of:'#findCompany'}
+	});
+	$("#pop").dialog().parents(".ui-dialog").find(".ui-dialog-titlebar").remove();
+	$('.ui-widget-content').css('background','white');
+
+	var cmpySearch = function(){
+		$.blockUI();
+		$.post("/cm/companySearch.ax", $("#cpFrm").serialize(), function(data){
+			$("#cmptList").html(data);
+
+			$("#cmptList tbody tr").hover(
+				function(){$(this).addClass("hover");},
+				function(){$(this).removeClass("hover");}
+			);
+		})
+		.fail(function(jqXHR, textStatus, errorThrown){
+			ajaxFail(jqXHR, textStatus, errorThrown);
+		})
+		.always(function(){
+			$.unblockUI();
+		});
+	};
+	//$(cmpySearch);
+
+	$("#companySearch").click(function() {
+		$(cmpySearch);
+	});
+
+	$(".close").click(function(event) {
+		event.preventDefault();
+		$("#pop").dialog("close");
+	});
+});
+
+function goPagePop(val){
+	$("#pNum").val(val);
+	$.blockUI();
+	$.post("/cm/companySearch.ax", $("#lForm").serialize(), function(data){
+		$("#cmptList").html(data);
+	})
+	.fail(function(jqXHR, textStatus, errorThrown){
+		ajaxFail(jqXHR, textStatus, errorThrown);
+	})
+	.always(function(){
+		$.unblockUI();
+	});
+}
+</script>
+<!--Top-->
+<div id="pop" style="display:none;">
+	<h1>Company Name</h1>
+	<img src="/images/common/pop_close.gif" alt="close" class="close"/>
+	<form id="cpFrm" name="cpFrm" onsubmit="return false;">
+	<p class="searchBox">
+		<label for="searchkeyCn">Company Name</label>
+		<input type="text" id="searchkeyCn" name="keyword" style="width:20em;" />
+		<input type="image" id="companySearch" src="/images/common/pop_search.gif" />
+	</p>
+	</form>
+	<div id="cmptList">
+		<form id="lForm" name="lForm">
+  <input type="hidden" id="pNum" name="pNum" value=""/>
+  <input type="hidden" id="key" name="keyword" value=""/>
+</form>
+<span>
+</span>
+<table class="list">
+<colgroup>
+  <col width="*"/>
+  <col width="15%"/>
+  <col width="20%"/>
+</colgroup>
+<thead>
+<tr>
+  <th>Company Name</th>
+  <th>Symbol</th>
+  <th class="end">Sector</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+
+<div id="footer">
+<div class="bottom">
+  <ul class="util">
+  <li><a href="/page/disclaimer.do">Disclaimer</a></li>
+  <li><a href="/page/linkPolicy.do">Link Policy</a></li>
+  <li><a href="/page/siteMap.do">Site Map</a></li>
+  <li><a href="/page/contactUs.do">Contact Us</a></li>
+  <li><a href="/page/faqs.do">FAQs</a></li>
+  </ul>
+  <ul class="social">
+  <li><a href="#rss" onclick="rssPage();return false;"><img src="/images/common/icon_rss.gif" alt="rss" /></a></li>
+  </ul>
+  <ul class="copyright">
+  <li><br/><img src="/images/common/pse_logo.gif" alt="PSE" /></li>
+  <li class="text">
+All materials on this website are protected by copyright and intellectual property laws and are the property of The Philippine Stock Exchange, Inc.<br/>
+Unless stated otherwise, you may access and download the materials located on the website only for personal, non-commercial use. <br/>
+&copy; 2012 The Philippine Stock Exchange, Inc. All Rights Reserved.
+  </li>
+  <li class="qrcode">
+    <a href="http://itunes.apple.com/ph/app/pse-edge/id813302884" target="_new" title="iOS App">
+      <img src="/images/common/icon_ios.png" alt="iOS App" /></a>
+    <a href="http://play.google.com/store/apps/details?id=com.pse.edge" target="_new" title="Android App">
+      <img src="/images/common/icon_android.png" alt="Android App" /></a>
+  </li>
+  </ul>
+</div>
+</div>
+<script type="text/javascript">
+  var left = 'no';
+  var topNav = '0';
+
+  $('#topNav a:eq('+topNav+')').addClass("select");
+  $('.'+left).find('a:first').addClass("select");
+
+  if (left.indexOf("sub1") == 0){
+    $('.sub1').css("display", "inline");
+  } else if (left.indexOf("sub5") == 0){
+    $('.sub5').css("display", "inline");
+  }
+
+  $(".menu01").click(function(){
+    if ($(".sub1").css("display") == "none") {
+      $(".sub1").css("display", "inline");
+    } else {
+      $(".sub1").css("display", "none");
+    }
+  });
+  $(".menu05").click(function(){
+    if ($(".sub5").css("display") == "none") {
+      $(".sub5").css("display", "inline");
+    } else {
+      $(".sub5").css("display", "none");
+    }
+  });
+</script>
+</body>
+</html>
+
