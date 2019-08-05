@@ -11,9 +11,301 @@
     "cmpyId": 212,
     "securityId": 179
   },
-  "_": {
-    "cmpyId": 0,
-    "securityId": 0
+  "ALCO": {
+    "cmpyId": 172,
+    "securityId": 316
+  },
+  "ALI": {
+    "cmpyId": 180,
+    "securityId": 293
+  },
+  "AP": {
+    "cmpyId": 609,
+    "securityId": 532 
+  },
+  "BDO": {
+    "cmpyId": 260,
+    "securityId": 468
+  },
+  "BEL": {
+    "cmpyId": 21,
+    "securityId": 252
+  },
+  "BLOOM": {
+    "cmpyId": 49,
+    "securityId": 233
+  },
+  "BPI": {
+    "cmpyId": 234,
+    "securityId": 101
+  },
+  "CDC": {
+    "cmpyId": 39,
+    "securityId": 297
+  },
+  "CEB": {
+    "cmpyId": 624,
+    "securityId": 560
+  },
+  "CHIB": {
+    "cmpyId": 184,
+    "securityId": 104
+  },
+  "CNPF": {
+    "cmpyId": 652,
+    "securityId": 597
+  },
+  "CSB": {
+    "cmpyId": 228,
+    "securityId": 457
+  },
+  "DD": {
+    "cmpyId": 651,
+    "securityId": 596
+  },
+  "DFNN": {
+    "cmpyId": 187,
+    "securityId": 125
+  },
+  "DELM": {
+    "cmpyId": 642,
+    "securityId": 585
+  },
+  "DMC": {
+    "cmpyId": 188,
+    "securityId": 192
+  },
+  "ELI": {
+    "cmpyId": 190,
+    "securityId": 300
+  },
+  "EMP": {
+    "cmpyId": 632,
+    "securityId": 571
+  },
+  "EW": {
+    "cmpyId": 634,
+    "securityId": 573
+  },
+  "FB": {
+    "cmpyId": 151,
+    "securityId": 161
+  },
+  "FDC": {
+    "cmpyId": 75,
+    "securityId": 199
+  },
+  "FLI": {
+    "cmpyId": 226,
+    "securityId": 302
+  },
+  "GLO": {
+    "cmpyId": 69,
+    "securityId": 127
+  },
+  "GTCAP": {
+    "cmpyId": 633,
+    "securityId": 572
+  },
+  "I": {
+    "cmpyId": 613,
+    "securityId": 538
+  },
+  "JFC": {
+    "cmpyid": 86,
+    "securityid": 158
+  },
+  "LBC": {
+    "cmpyid": 236,
+    "securityid": 469
+  },
+  "LFM": {
+    "cmpyid": 227,
+    "securityid": 159
+  },
+  "LOTO": {
+    "cmpyid": 605,
+    "securityid": 528
+  },
+  "LR": {
+    "cmpyid": 96,
+    "securityid": 253
+  },
+  "LTG": {
+    "cmpyid": 12,
+    "securityid": 225
+  },
+  "MAC": {
+    "cmpyid": 106,
+    "securityid": 212
+  },
+  "MACAY": {
+    "cmpyid": 145,
+    "securityid": 221
+  },
+  "MAXS": {
+    "cmpyid": 135,
+    "securityid": 163
+  },
+  "MBT": {
+    "cmpyid": 128,
+    "securityid": 108
+  },
+  "MEG": {
+    "cmpyid": 127,
+    "securityid": 215
+  },
+  "MER": {
+    "cmpyid": 118,
+    "securityid": 137
+  },
+  "MJC": {
+    "cmpyid": 102,
+    "securityid": 256
+  },
+  "MRSGI": {
+    "cmpyid": 659,
+    "securityid": 616
+  },
+  "PA": {
+    "cmpyid": 109,
+    "securityid": 342
+  },
+  "PAL": {
+    "cmpyid": 20,
+    "securityid": 189
+  },
+  "PBB": {
+    "cmpyid": 640,
+    "securityid": 583
+  },
+  "PBC": {
+    "cmpyid": 208,
+    "securityid": 110
+  },
+  "PCOR": {
+    "cmpyid": 136,
+    "securityid": 139
+  },
+  "PGOLD": {
+    "cmpyid": 629,
+    "securityid": 567
+  },
+  "PHR": {
+    "cmpyid": 631,
+    "securityid": 570
+  },
+  "PIP": {
+    "cmpyid": 617,
+    "securityid": 543
+  },
+  "PIZZA": {
+    "cmpyid": 664,
+    "securityid": 631
+  },
+  "PLC": {
+    "cmpyid": 158,
+    "securityid": 344
+  },
+  "PNB": {
+    "cmpyid": 139,
+    "securityid": 109
+  },
+  "PNX": {
+    "cmpyid": 608,
+    "securityid": 531
+  },
+  "PSE": {
+    "cmpyid": 478,
+    "securityid": 512
+  },
+  "PTC": {
+    "cmpyid": 144,
+    "securityid": 393
+  },
+  "RCB": {
+    "cmpyid": 232,
+    "securityid": 113
+  },
+  "RFM": {
+    "cmpyid": 77,
+    "securityid": 164
+  },
+  "RLC": {
+    "cmpyid": 195,
+    "securityid": 312
+  },
+  "RRHI": {
+    "cmpyid": 646,
+    "securityid": 589
+  },
+  "RWM": {
+    "cmpyid": 645,
+    "securityid": 588
+  },
+  "SCC": {
+    "cmpyid": 157,
+    "securityid": 396
+  },
+  "SECB": {
+    "cmpyid": 32,
+    "securityid": 114
+  },
+  "SEVN": {
+    "cmpyid": 143,
+    "securityid": 251
+  },
+  "SFI": {
+    "cmpyid": 165,
+    "securityid": 402
+  },
+  "SHLPH": {
+    "cmpyid": 663,
+    "securityid": 629
+  },
+  "SHNG": {
+    "cmpyid": 218,
+    "securityid": 301
+  },
+  "SLI": {
+    "cmpyid": 41,
+    "securityid": 417
+  },
+  "SM": {
+    "cmpyid": 599,
+    "securityid": 520
+  },
+  "SMC": {
+    "cmpyid": 154,
+    "securityid": 165
+  },
+  "SMPH": {
+    "cmpyid": 112,
+    "securityid": 314
+  },
+  "SSI": {
+    "cmpyid": 654,
+    "securityid": 604
+  },
+  "TEL": {
+    "cmpyid": 6,
+    "securityid": 134
+  },
+  "UBP": {
+    "cmpyid": 167,
+    "securityid": 115
+  },
+  "URC": {
+    "cmpyid": 124,
+    "securityid": 167
+  },
+  "VLL": {
+    "cmpyid": 607,
+    "securityid": 530
+  },
+  "WLCON": {
+    "cmpyid": 665,
+    "securityid": 632
   }
 }
 
