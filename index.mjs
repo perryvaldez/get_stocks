@@ -1,16 +1,9 @@
-import moment from 'moment';
 import converter from 'json-2-csv';
-import { BASE_URL, USER_AGENT, COMPANY_DIR_MAIN_PAGE, STOCK_DATA_PAGE, BASE_URL_2, PSE_HOME, PSE_STOCK } from './lib/constants';
-import { makeCookieJar, getPage, parseHtmlGetData, getJson } from './lib/util';
+import { USER_AGENT, BASE_URL_2, PSE_HOME, PSE_STOCK } from './lib/constants';
+import { makeCookieJar, getPage, getJson } from './lib/util';
 import companyData from './companies';
 
 const cookieJar = makeCookieJar();
-const commonHeaders = {
-  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-  'Accept-Language': 'en-PH,en-US;q=0.9,en;q=0.8',
-  'Upgrade-Insecure-Requests': '1',
-  'User-Agent': USER_AGENT,
-};
 
 const commonHeadersPSE = {
   Accept: 'application/json',
@@ -29,28 +22,27 @@ const commonOpts = {
   mode: 'cors',
 };
 
-const now = moment();
-
 (async () => {
   let url;
   let referrer;
   let content;
-  let step;
+  let headers;
+  let opts;
 
-  const out = [];
   const outDict = {};
 
   try {
 
-    // const csv = await converter.json2csvAsync(out);
-    // console.log(csv);
-
     url = BASE_URL_2;
-    await getPage(url, cookieJar, { ...commonOpts, header: commonHeaders });
+    headers = commonHeadersPSE;
+    opts = { ...commonOpts, headers };
+    await getPage(url, cookieJar, opts);
 
     url = `${BASE_URL_2}/${PSE_HOME}`;
     referrer = BASE_URL_2;
-    await getPage(url, cookieJar, { ...commonOpts, header: { ...{ commonHeaders }, Referer: referrer } });
+    headers = { ...commonHeadersPSE, Referer: referrer };
+    opts =  { ...commonOpts, headers };
+    await getPage(url, cookieJar, opts);
 
     const companyKeyList = Object.keys(companyData);
     companyKeyList.sort();
@@ -60,13 +52,17 @@ const now = moment();
       if (companyKey === '_') continue;
 
       try {
+        console.warn('Processing: ', companyKey);
         url = `${BASE_URL_2}/${PSE_STOCK}?id=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}&tab=0`;
         referrer = `${BASE_URL_2}/${PSE_HOME}`;
-        await getPage(url, cookieJar, { ...commonOpts, header: { ...{ commonHeaders }, Referer: referrer } });
+        headers = { ...commonHeadersPSE, Referer: referrer };
+        opts = { ...commonOpts, headers };
+        await getPage(url, cookieJar, opts);
 
         url = `${BASE_URL_2}/${PSE_STOCK}?method=fetchHeaderData&ajax=true`;
         referrer = `${BASE_URL_2}/${PSE_STOCK}?id=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}&tab=0`;
-        let opts = { ...commonOpts, method: 'POST', body: `company=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}`, headers: { ...commonHeadersPSE, Referer: referrer } };
+        headers = { ...commonHeadersPSE, Referer: referrer };
+        opts = { ...commonOpts, method: 'POST', body: `company=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}`, headers };
         content = await getJson(url, cookieJar, opts);
 
         if (!content.records[0].lastTradedDate) {
@@ -82,14 +78,16 @@ const now = moment();
             '52-Week Low': content.records[0].headerFiftyTwoWeekLow,
           };
         }
-
       } catch (itemEx) {
         console.error(`Error while fetching ${companyKey}: `, itemEx);
       }
     }
 
     const list = companyKeyList.map((key) => outDict[key]);
-    console.log(list);
+    const csv = await converter.json2csvAsync(list);
+    console.log(csv);
+
+    // console.log(list);
   } catch (ex) {
     console.error(`Error: `, ex);
   }
