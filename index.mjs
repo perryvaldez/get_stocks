@@ -1,6 +1,6 @@
 import converter from 'json-2-csv';
 import { USER_AGENT, BASE_URL_2, PSE_HOME, PSE_STOCK } from './lib/constants';
-import { makeCookieJar, getPage, getJson, formatDate } from './lib/util';
+import { makeCookieJar, getPage, getJson, formatDate, zero } from './lib/util';
 import companyData from './companies';
 
 const cookieJar = makeCookieJar();
@@ -88,7 +88,7 @@ const getHomePage = async () => {
           outDict[companyKey] = {
             Symbol: companyKey,
             Date: formatDate(asOfDate),
-            'Stock Price': content.records[0].headerLastTradePrice,
+            'Stock Price': !zero(content.records[0].headerLastTradePrice) ? content.records[0].headerLastTradePrice : content.records[0].headerSqPrevious,
             Change: content.records[0].headerChangeClose,
             'P/E Ratio': content.records[0].headerCurrentPe,
             '52-Week High': content.records[0].headerFiftyTwoWeekHigh,
