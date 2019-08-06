@@ -1,6 +1,6 @@
 import converter from 'json-2-csv';
 import { USER_AGENT, BASE_URL_2, PSE_HOME, PSE_STOCK } from './lib/constants';
-import { makeCookieJar, getPage, getJson } from './lib/util';
+import { makeCookieJar, getPage, getJson, formatDate } from './lib/util';
 import companyData from './companies';
 
 const cookieJar = makeCookieJar();
@@ -22,28 +22,39 @@ const commonOpts = {
   mode: 'cors',
 };
 
+const getHomePage = async () => {
+  let url;
+  let referrer;
+  let headers;
+  let opts;
+
+  url = BASE_URL_2;
+  headers = commonHeadersPSE;
+  opts = { ...commonOpts, headers };
+  await getPage(url, cookieJar, opts);
+
+  url = `${BASE_URL_2}/${PSE_HOME}`;
+  referrer = BASE_URL_2;
+  headers = { ...commonHeadersPSE, Referer: referrer };
+  opts =  { ...commonOpts, headers };
+  await getPage(url, cookieJar, opts);
+};
+
 (async () => {
   let url;
   let referrer;
   let content;
   let headers;
   let opts;
+  let asOfDate;
 
   const outDict = {};
 
   try {
+    console.warn('Starting...');
+    await getHomePage();
 
-    url = BASE_URL_2;
-    headers = commonHeadersPSE;
-    opts = { ...commonOpts, headers };
-    await getPage(url, cookieJar, opts);
-
-    url = `${BASE_URL_2}/${PSE_HOME}`;
-    referrer = BASE_URL_2;
-    headers = { ...commonHeadersPSE, Referer: referrer };
-    opts =  { ...commonOpts, headers };
-    await getPage(url, cookieJar, opts);
-
+    console.warn('Getting company data...');
     const companyKeyList = Object.keys(companyData);
     companyKeyList.sort();
 
@@ -57,7 +68,13 @@ const commonOpts = {
         referrer = `${BASE_URL_2}/${PSE_HOME}`;
         headers = { ...commonHeadersPSE, Referer: referrer };
         opts = { ...commonOpts, headers };
-        await getPage(url, cookieJar, opts);
+        content = await getPage(url, cookieJar, opts);
+
+        asOfDate = '';
+        const match = content.match(/<div id="comTopInfo">\s*As of ([a-zA-Z]+\s+[0-9]+\s*,\s*[0-9]+)/);
+        if (match) {
+          asOfDate = match[1];
+        }
 
         url = `${BASE_URL_2}/${PSE_STOCK}?method=fetchHeaderData&ajax=true`;
         referrer = `${BASE_URL_2}/${PSE_STOCK}?id=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}&tab=0`;
@@ -65,12 +82,12 @@ const commonOpts = {
         opts = { ...commonOpts, method: 'POST', body: `company=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}`, headers };
         content = await getJson(url, cookieJar, opts);
 
-        if (!content.records[0].lastTradedDate) {
-          console.warn(`No record for "${companyKey}": `, content);
+        if (!content || !content.records || !content.records[0].lastTradedDate) {
+          console.warn(`Unable to fetch the record for "${companyKey}": `, content);
         } else {
           outDict[companyKey] = {
             Symbol: companyKey,
-            Date: content.records[0].lastTradedDate.substr(0, 10),
+            Date: formatDate(asOfDate),
             'Stock Price': content.records[0].headerLastTradePrice,
             Change: content.records[0].headerChangeClose,
             'P/E Ratio': content.records[0].headerCurrentPe,
