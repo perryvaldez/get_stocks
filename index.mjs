@@ -1,6 +1,6 @@
 import converter from 'json-2-csv';
 import { USER_AGENT, BASE_URL_2, PSE_HOME, PSE_STOCK } from './lib/constants';
-import { makeCookieJar, getPage, getJson, formatDate, zero } from './lib/util';
+import { makeCookieJar, getPage, getJson, formatDate, zero, enq, deq } from './lib/util';
 import companyData from './companies';
 
 const cookieJar = makeCookieJar();
@@ -27,17 +27,22 @@ const getHomePage = async () => {
   let referrer;
   let headers;
   let opts;
+  let content;
 
   url = BASE_URL_2;
   headers = commonHeadersPSE;
   opts = { ...commonOpts, headers };
-  await getPage(url, cookieJar, opts);
+  content = await getPage(url, cookieJar, opts);
+  if (!content) return null;
 
   url = `${BASE_URL_2}/${PSE_HOME}`;
   referrer = BASE_URL_2;
   headers = { ...commonHeadersPSE, Referer: referrer };
   opts =  { ...commonOpts, headers };
-  await getPage(url, cookieJar, opts);
+  content = await getPage(url, cookieJar, opts);
+  if (!content) return null;
+
+  return content;
 };
 
 (async () => {
@@ -48,18 +53,24 @@ const getHomePage = async () => {
   let opts;
   let asOfDate;
 
+  const queue = [];
   const outDict = {};
 
   try {
     console.warn('Starting...');
-    await getHomePage();
+    content = await getHomePage();
+    if (!content) return;
 
     console.warn('Getting company data...');
     const companyKeyList = Object.keys(companyData);
     companyKeyList.sort();
 
     for (let i = 0; i < companyKeyList.length; i++) {
-      let companyKey = companyKeyList[i];
+      enq(queue, companyKeyList[i]);
+    }
+
+    while (queue.length > 0) {
+      let companyKey = deq(queue);
       if (companyKey === '_') continue;
 
       try {
@@ -68,7 +79,12 @@ const getHomePage = async () => {
         referrer = `${BASE_URL_2}/${PSE_HOME}`;
         headers = { ...commonHeadersPSE, Referer: referrer };
         opts = { ...commonOpts, headers };
-        content = await getPage(url, cookieJar, opts);
+        content = await getPage(url, cookieJar, opts, async () => {
+          console.warn('Trying later.');
+          enq(queue, companyKey);
+        });
+
+        if (!content) continue;
 
         asOfDate = '';
         const match = content.match(/<div id="comTopInfo">\s*As of ([a-zA-Z]+\s+[0-9]+\s*,\s*[0-9]+)/);
@@ -80,9 +96,14 @@ const getHomePage = async () => {
         referrer = `${BASE_URL_2}/${PSE_STOCK}?id=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}&tab=0`;
         headers = { ...commonHeadersPSE, Referer: referrer };
         opts = { ...commonOpts, method: 'POST', body: `company=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}`, headers };
-        content = await getJson(url, cookieJar, opts);
+        content = await getJson(url, cookieJar, opts, async () => {
+          console.warn('Trying later.');
+          enq(queue, companyKey);
+        });
 
-        if (!content || !content.records || !content.records[0].lastTradedDate) {
+        if (!content) continue;
+
+        if (!content.records || !content.records[0].lastTradedDate) {
           console.warn(`Unable to fetch the record for "${companyKey}": `, content);
         } else {
           outDict[companyKey] = {
