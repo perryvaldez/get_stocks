@@ -110,7 +110,6 @@ const getHomePage = async () => {
             Symbol: companyKey,
             Date: formatDate(asOfDate),
             'Stock Price': !zero(content.records[0].headerLastTradePrice) ? content.records[0].headerLastTradePrice : content.records[0].headerSqPrevious,
-            Change: content.records[0].headerChangeClose,
             'P/E Ratio': content.records[0].headerCurrentPe,
             '52-Week High': content.records[0].headerFiftyTwoWeekHigh,
             '52-Week Low': content.records[0].headerFiftyTwoWeekLow,
