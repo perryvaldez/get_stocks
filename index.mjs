@@ -16,6 +16,11 @@ const commonHeadersPSE = {
   Accept: 'application/json',
   'User-Agent': USER_AGENT,
   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+  'Cache-Control': 'no-cache',
+  'Origin': 'https://www.pse.com.ph',
+  'Pragma': 'no-cache',
+  'Sec-Fetch-Mode': 'cors',
+  'Sec-Fetch-Site': 'same-origin',
 };
 
 const commonOpts = {
@@ -54,30 +59,39 @@ const now = moment();
       let companyKey = companyKeyList[i];
       if (companyKey === '_') continue;
 
-      url = `${BASE_URL_2}/${PSE_STOCK}?id=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}&tab=0`;
-      referrer = `${BASE_URL_2}/${PSE_HOME}`;
-      await getPage(url, cookieJar, { ...commonOpts, header: { ...{ commonHeaders }, Referer: referrer } });
+      try {
+        url = `${BASE_URL_2}/${PSE_STOCK}?id=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}&tab=0`;
+        referrer = `${BASE_URL_2}/${PSE_HOME}`;
+        await getPage(url, cookieJar, { ...commonOpts, header: { ...{ commonHeaders }, Referer: referrer } });
 
-      url = `${BASE_URL_2}/${PSE_STOCK}?method=fetchHeaderData&ajax=true`;
-      referrer = `${BASE_URL_2}/${PSE_STOCK}?id=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}&tab=0`;
-      let opts = { ...commonOpts, method: 'POST', body: `company=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}`, headers: { ...commonHeadersPSE, Referer: referrer } };
-      content = await getJson(url, cookieJar, opts);
+        url = `${BASE_URL_2}/${PSE_STOCK}?method=fetchHeaderData&ajax=true`;
+        referrer = `${BASE_URL_2}/${PSE_STOCK}?id=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}&tab=0`;
+        let opts = { ...commonOpts, method: 'POST', body: `company=${companyData[companyKey].cmpyId}&security=${companyData[companyKey].securityId}`, headers: { ...commonHeadersPSE, Referer: referrer } };
+        content = await getJson(url, cookieJar, opts);
 
-      outDict[companyKey] = {
-        Symbol: companyKey,
-        Date: content.records[0].lastTradedDate,
-        'Stock Price': content.records[0].headerLastTradePrice,
-        Change: content.records[0].headerChangeClose,
-        'P/E Ratio': content.records[0].headerCurrentPe,
-        '52-Week High': content.records[0].headerFiftyTwoWeekHigh,
-        '52-Week Low': content.records[0].headerFiftyTwoWeekLow,
-      };
+        if (!content.records[0].lastTradedDate) {
+          console.warn(`No record for "${companyKey}": `, content);
+        } else {
+          outDict[companyKey] = {
+            Symbol: companyKey,
+            Date: content.records[0].lastTradedDate.substr(0, 10),
+            'Stock Price': content.records[0].headerLastTradePrice,
+            Change: content.records[0].headerChangeClose,
+            'P/E Ratio': content.records[0].headerCurrentPe,
+            '52-Week High': content.records[0].headerFiftyTwoWeekHigh,
+            '52-Week Low': content.records[0].headerFiftyTwoWeekLow,
+          };
+        }
+
+      } catch (itemEx) {
+        console.error(`Error while fetching ${companyKey}: `, itemEx);
+      }
     }
 
     const list = companyKeyList.map((key) => outDict[key]);
     console.log(list);
   } catch (ex) {
-    console.log(`Error: `, ex);
+    console.error(`Error: `, ex);
   }
 })();
 
