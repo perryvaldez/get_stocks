@@ -163,6 +163,10 @@
     "cmpyId": 102,
     "securityId": 256
   },
+  "MPI": {
+    "cmpyId": 604,
+    "securityId": 526 
+  },
   "MRSGI": {
     "cmpyId": 659,
     "securityId": 616
