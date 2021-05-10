@@ -12,7 +12,7 @@
   "dependencies": {
     "abort-controller": "^3.0.0",
     "json-2-csv": "^3.5.5",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
     "node-fetch-cookies": "^1.0.6"
